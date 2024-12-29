@@ -17,6 +17,7 @@ import android.os.UserHandleHidden;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.format.Formatter;
 import android.text.style.RelativeSizeSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -319,6 +320,11 @@ public class MainRecyclerAdapter extends MultiSelectionView.Adapter<MainRecycler
                             .getQuantityString(R.plurals.usage_days, (int) days, days),
                     context.getString(R.string.version), backup.versionName));
             holder.backupInfoExt.setText(item.backupFlagsStr);
+        } else if (mActivity.viewModel.getSortBy() == MainListOptions.SORT_BY_TOTAL_SIZE && item.totalSize > 0L) {
+            //If it is a sort mode and there is no backup information, the size is displayed.
+            holder.backupInfo.setVisibility(View.VISIBLE);
+            holder.backupInfo.setText(Formatter.formatFileSize(context, item.totalSize));
+            holder.backupIndicator.setVisibility(View.GONE);
         } else {
             holder.backupIndicator.setVisibility(View.GONE);
             holder.backupInfo.setVisibility(View.GONE);
