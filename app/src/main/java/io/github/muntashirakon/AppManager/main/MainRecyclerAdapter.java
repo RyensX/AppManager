@@ -322,9 +322,14 @@ public class MainRecyclerAdapter extends MultiSelectionView.Adapter<MainRecycler
             holder.backupInfoExt.setText(item.backupFlagsStr);
         } else if (mActivity.viewModel.getSortBy() == MainListOptions.SORT_BY_TOTAL_SIZE && item.totalSize > 0L) {
             //If it is a sort mode and there is no backup information, the size is displayed.
-            holder.backupInfo.setVisibility(View.VISIBLE);
-            holder.backupInfo.setText(Formatter.formatFileSize(context, item.totalSize));
             holder.backupIndicator.setVisibility(View.GONE);
+            ThreadUtils.postOnBackgroundThread(() -> {
+                String size = Formatter.formatFileSize(context, item.totalSize);
+                ThreadUtils.postOnMainThread(() -> {
+                    holder.backupInfo.setVisibility(View.VISIBLE);
+                    holder.backupInfo.setText(size);
+                });
+            });
         } else {
             holder.backupIndicator.setVisibility(View.GONE);
             holder.backupInfo.setVisibility(View.GONE);
